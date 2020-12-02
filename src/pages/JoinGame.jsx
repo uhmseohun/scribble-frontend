@@ -1,22 +1,24 @@
-import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import Player from '../components/Player';
 import Button from '../components/Button';
 import TextField from '../components/TextField';
-import ws from '../ws';
+import { useHistory } from 'react-router-dom';
+import { useState, useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserName as setReduxUserName } from '../store/actions';
+import { websocketContext } from '../websocket';
 
 const JoinGame = () => {
   const [userName, setUserName] = useState(null);
   const history = useHistory();
+  const dispatch = useDispatch();
+  const users = useSelector(state => state.context.users);
+  const ws = useContext(websocketContext);
 
   const handleUserJoin = () => {
     if (!userName.length) return alert('사용자 이름을 입력해 주세요.');
-    ws._send({
-      type: 'event',
-      event: 'userJoin',
-      payload: { userName },
-    });
+    ws.emitEvent('userJoin', { userName });
+    dispatch(setReduxUserName(userName));
     history.push('/game');
   };
 
@@ -25,7 +27,11 @@ const JoinGame = () => {
       <SideBox>
         <SideBoxHeader>참가 중인 플레이어</SideBoxHeader>
         <PlayerListWrapper>
-          <Player player={{ name: 'asdf' }} />
+          {
+            users.map((user) => (
+              <Player user={user} />
+            ))
+          }
         </PlayerListWrapper>
       </SideBox>
 
@@ -34,7 +40,6 @@ const JoinGame = () => {
         <InputFormContainer>
           <RightMarginTextField
             placeholder='사용자 이름을 입력하세요.'
-            style={{ flex: 1, marginRight: '7px' }}
             onInput={(e) => setUserName(e.target.value)}
           />
           <Button onClick={handleUserJoin}>참가하기</Button>

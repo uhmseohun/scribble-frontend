@@ -3,7 +3,7 @@ import styled from 'styled-components';
 const Player = (props) => (
   <PlayerContainer>
     <Avatar />
-    <Name>{props.player.name}</Name>
+    <Name>{props.user.name}</Name>
   </PlayerContainer>
 );
 
