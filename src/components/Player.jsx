@@ -14,7 +14,7 @@ const PlayerContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5px;
+  margin: 0 7px 5px 7px;
 `;
 
 const Name = styled.span``;

@@ -69,8 +69,8 @@ const SideBox = styled.div`
   margin: 30px;
 `;
 
-const PlayerListWrapper = styled.span`
-  margin-top: 5px;
+const PlayerListWrapper = styled.div`
+  margin-top: 15px;
   display: flex;
 `;
 
