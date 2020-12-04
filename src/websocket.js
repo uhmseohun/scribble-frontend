@@ -54,6 +54,12 @@ const WebsocketProvider = ({ children }) => {
       case 'setUserKey':
         dispatch(setUserKey(payload));
         break;
+      case 'alert':
+        alert(payload);
+        break;
+      case 'answerWord':
+        alert(`${payload}를 그리세요.`);
+        break;
       default:
         break;
     }

@@ -41,6 +41,8 @@ const Canvas = ({ width = 400, height = 400 }) => {
           x: -1,
           y: -1,
         };
+      } else if (data.event === 'clearCanvas') {
+        ctx.clearRect(0, 0, width, height);
       }
     }
   });
@@ -66,7 +68,7 @@ const Canvas = ({ width = 400, height = 400 }) => {
   };
 
   const draw = (event) => {
-    if (pos.drawable) {
+    if (pos.drawable && isMyTurn) {
       if (
         pos.x === event.offsetX &&
         pos.y === event.offsetY
@@ -75,8 +77,6 @@ const Canvas = ({ width = 400, height = 400 }) => {
         ...pos,
         ...getPosition(event),
       };
-      // ctx.lineTo(pos.x, pos.y);
-      // ctx.stroke();
       ws.sendDrawing('draw', {
         x: pos.x,
         y: pos.y,
