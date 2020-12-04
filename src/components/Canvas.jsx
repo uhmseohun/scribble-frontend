@@ -1,14 +1,49 @@
-import React, { createRef, useEffect } from 'react';
+import React, { createRef, useEffect, useContext } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { websocketContext } from '../websocket';
+
+let pos = {
+  drawable: false,
+  x: -1,
+  y: -1,
+};
+let ctx;
 
 const Canvas = ({ width = 400, height = 400 }) => {
+  const isMyTurn = useSelector(state => (
+    state.context.drawer === state.userInfo.key
+  ));
+  const ws = useContext(websocketContext)
   const canvasRef = createRef();
-  let pos = {
-    drawable: false,
-    x: -1,
-    y: -1,
-  };
-  let ctx;
+
+  ws.socket.addEventListener('message', ({ data }) => {
+    data = JSON.parse(data);
+    if (data.type === 'draw') {
+      if (data.event === 'initDraw') {
+        ctx.beginPath();
+        pos = {
+          drawable: true,
+          ...(data.payload),
+        };
+      } else if (data.event === 'draw') {
+        if (pos.drawable) {
+          pos = {
+            drawable: true,
+            ...(data.payload),
+          };
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        }
+      } else if (data.event === 'finishDraw') {
+        pos = {
+          drawable: false,
+          x: -1,
+          y: -1,
+        };
+      }
+    }
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -27,16 +62,25 @@ const Canvas = ({ width = 400, height = 400 }) => {
       drawable: true,
       ...getPosition(event),
     };
+    ws.sendDrawing('initDraw');
   };
 
   const draw = (event) => {
     if (pos.drawable) {
+      if (
+        pos.x === event.offsetX &&
+        pos.y === event.offsetY
+      ) return;
       pos = {
         ...pos,
         ...getPosition(event),
       };
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
+      // ctx.lineTo(pos.x, pos.y);
+      // ctx.stroke();
+      ws.sendDrawing('draw', {
+        x: pos.x,
+        y: pos.y,
+      });
     }
   };
 
@@ -46,6 +90,7 @@ const Canvas = ({ width = 400, height = 400 }) => {
       x: -1,
       y: -1,
     };
+    ws.sendDrawing('finishDraw');
   };
 
   const getPosition = (event) => {

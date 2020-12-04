@@ -6,9 +6,9 @@ import { addMessage, setContext, setUserKey } from './store/actions';
 export const websocketContext = createContext(null);
 
 const websocketUri = 'ws://localhost:4000/ws';
+const socket = new WebSocket(websocketUri);
 
 const WebsocketProvider = ({ children }) => {
-  const socket = new WebSocket(websocketUri);
   const dispatch = useDispatch();
 
   socket.onmessage = async ({ data: message }) => {
@@ -37,6 +37,14 @@ const WebsocketProvider = ({ children }) => {
     }));
   };
 
+  const sendDrawing = (event, payload = undefined) => {
+    socket.send(JSON.stringify({
+      type: 'draw',
+      event,
+      payload,
+    }));
+  };
+
   const eventHandler = async ({ event, payload }) => {
     switch (event) {
       case 'needRefresh':
@@ -59,6 +67,7 @@ const WebsocketProvider = ({ children }) => {
     socket,
     sendMessage,
     emitEvent,
+    sendDrawing,
   };
 
   return (
