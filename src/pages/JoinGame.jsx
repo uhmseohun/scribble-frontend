@@ -12,7 +12,9 @@ const JoinGame = () => {
   const [userName, setUserName] = useState(null);
   const history = useHistory();
   const dispatch = useDispatch();
-  const users = useSelector(state => state.context.users);
+  const users = useSelector(state => (
+    state.context.users.sort((a, b) => a.rank - b.rank)
+  ));
   const ws = useContext(websocketContext);
 
   const handleUserJoin = () => {
@@ -25,25 +27,28 @@ const JoinGame = () => {
   return (
     <PageContainer>
       <SideBox>
-        <SideBoxHeader>참가 중인 플레이어</SideBoxHeader>
-        <PlayerListWrapper>
+        <SideBoxHeader>접속 중인 플레이어</SideBoxHeader>
+        <PlayerList>
           {
-            users.map((user) => (
-              <Player user={user} />
+            users.map((user, index) => (
+              <Player
+                user={user}
+                rank={index + 1}
+              />
             ))
           }
-        </PlayerListWrapper>
+        </PlayerList>
       </SideBox>
 
       <SideBox>
         <SideBoxHeader>참가하기</SideBoxHeader>
-        <InputFormContainer>
+        <InputForm>
           <RightMarginTextField
             placeholder='사용자 이름을 입력하세요.'
             onInput={(e) => setUserName(e.target.value)}
           />
           <Button onClick={handleUserJoin}>참가하기</Button>
-        </InputFormContainer>
+        </InputForm>
       </SideBox>
     </PageContainer>
   );
@@ -63,15 +68,16 @@ const SideBox = styled.div`
   flex-direction: column;
   border: 1px solid #EBEEF4;
   border-radius: 10px;
+  background-color: #F8FAFC;
   padding: 20px;
   width: 400px;
   height: 400px;
   margin: 30px;
 `;
 
-const PlayerListWrapper = styled.div`
+const PlayerList = styled.div`
   margin-top: 15px;
-  display: flex;
+  overflow: scroll;
 `;
 
 const SideBoxHeader = styled.span`
@@ -79,7 +85,7 @@ const SideBoxHeader = styled.span`
   display: block;
 `;
 
-const InputFormContainer = styled.div`
+const InputForm = styled.div`
   margin-top: auto;
   display: flex;
 `;

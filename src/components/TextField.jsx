@@ -5,8 +5,8 @@ const TextField = styled.input`
     position: relative;
     font-size: 1rem;
     padding: 0 1rem;
-    height: 2.3rem;
-    border-radius: 0.375rem;
+    height: 2.5rem;
+    border-radius: 10px;
     border: 1px solid #ECEEF3;
     color: #2F3747;
 

@@ -1,16 +1,24 @@
 import axios from './axios';
 import { createContext } from 'react';
 import { useDispatch } from 'react-redux';
-import { setContext, setUserKey } from './store/actions';
+import { addMessage, setContext, setUserKey } from './store/actions';
 
 export const websocketContext = createContext(null);
 
 const websocketUri = 'ws://localhost:4000/ws';
 
 const WebsocketProvider = ({ children }) => {
-  let socket;
-  let ws;
+  const socket = new WebSocket(websocketUri);
   const dispatch = useDispatch();
+
+  socket.onmessage = async ({ data: message }) => {
+    message = JSON.parse(message);
+    if (message.type === 'event') {
+      await eventHandler(message);
+    } else if (message.type === 'message') {
+      await messageHandler(message);
+    }
+  };
 
   const sendMessage = (message) => {
     socket.send(JSON.stringify({
@@ -18,6 +26,7 @@ const WebsocketProvider = ({ children }) => {
       payload: message,
     }));
   };
+
   const emitEvent = (event, payload = undefined) => {
     socket.send(JSON.stringify({
       type: 'event',
@@ -42,21 +51,15 @@ const WebsocketProvider = ({ children }) => {
     }
   };
 
-  if (!socket) {
-    socket = new WebSocket(websocketUri);
-    socket.onmessage = async ({ data: message }) => {
-      message = JSON.parse(message);
-      if (message.type === 'event') {
-        await eventHandler(message);
-      }
-    };
+  const messageHandler = async ({ payload: message }) => {
+    dispatch(addMessage(message));
+  };
 
-    ws = {
-      socket,
-      sendMessage,
-      emitEvent,
-    };
-  }
+  const ws = {
+    socket,
+    sendMessage,
+    emitEvent,
+  };
 
   return (
     <websocketContext.Provider value={ws}>

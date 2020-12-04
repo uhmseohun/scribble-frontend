@@ -8,7 +8,7 @@ const Button = styled.button`
   appearance: none;
   transition: all 250ms ease 0s;
   user-select: none;
-  border-radius: 0.3rem;
+  border-radius: 10px;
   border: none;
   height: 2.5rem;
   min-width: 2.5rem;
