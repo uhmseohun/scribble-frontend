@@ -4,7 +4,7 @@ import Player from '../components/Player';
 import TextField from '../components/TextField';
 import Button from '../components/Button';
 import MessageBox from '../components/MessageBox';
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { websocketContext } from '../websocket';
 
@@ -14,11 +14,12 @@ const Game = () => {
   ));
   const messages = useSelector(state => state.messages);
   const [userMessage, setUserMessage] = useState(null);
+  const messageField = useRef();
   const ws = useContext(websocketContext);
 
   const sendUserMessage = () => {
     ws.sendMessage(userMessage);
-    setUserMessage(null); // todo
+    messageField.current.value = null;
   };
 
   return (
@@ -53,6 +54,7 @@ const Game = () => {
               placeholder='메시지나 정답을 입력하세요.'
               value={userMessage}
               onInput={(e) => setUserMessage(e.target.value)}
+              ref={messageField}
             />
             <Button onClick={sendUserMessage}>보내기</Button>
           </InputForm>
