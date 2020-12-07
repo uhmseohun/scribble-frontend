@@ -53,7 +53,6 @@ const Canvas = ({ width = 400, height = 400 }) => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    // eslint-disable-next-line
     ctx = canvas.getContext('2d');
     ctx.strokeStyle = '#72AEAA';
     canvas.addEventListener('mousedown', initDraw);
