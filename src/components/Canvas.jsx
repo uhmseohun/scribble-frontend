@@ -9,6 +9,7 @@ let pos = {
   y: -1,
 };
 let ctx;
+// useState를 사용하려고 했으나 성능이 안 나와서 사용하지 못 함
 
 const Canvas = ({ width = 400, height = 400 }) => {
   const drawer = useSelector(state => state.context.drawer)

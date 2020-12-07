@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const Navbar = () => (
   <NavBarContainer>
-    <Brand>🎨 엄크리블</Brand>
+    <Brand>🎨 크리블</Brand>
   </NavBarContainer>
 );
 
