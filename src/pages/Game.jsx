@@ -10,7 +10,7 @@ import { websocketContext } from '../websocket';
 
 const Game = () => {
   const users = useSelector(state => (
-    state.context.users.sort((a, b) => a.rank - b.rank)
+    state.context.users.sort((a, b) => b.score - a.score)
   ));
   const messages = useSelector(state => state.messages);
   const [userMessage, setUserMessage] = useState(null);
@@ -34,7 +34,6 @@ const Game = () => {
           <PlayerList>
             {
               users
-                .sort((a, b) => b.score - a.score)
                 .map((user, index) => (
                   <Player
                     user={user}

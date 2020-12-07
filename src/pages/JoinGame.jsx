@@ -2,10 +2,11 @@ import styled from 'styled-components';
 import Player from '../components/Player';
 import Button from '../components/Button';
 import TextField from '../components/TextField';
+import axios from '../axios';
 import { useHistory } from 'react-router-dom';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUserName as setReduxUserName } from '../store/actions';
+import { setContext, setUserName as setReduxUserName } from '../store/actions';
 import { websocketContext } from '../websocket';
 
 const JoinGame = () => {
@@ -13,7 +14,7 @@ const JoinGame = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const users = useSelector(state => (
-    state.context.users.sort((a, b) => a.rank - b.rank)
+    state.context.users.sort((a, b) => b.score - a.score)
   ));
   const ws = useContext(websocketContext);
 
@@ -23,6 +24,15 @@ const JoinGame = () => {
     dispatch(setReduxUserName(userName));
     history.push('/game');
   };
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { data: context } = await axios.get('/context');
+      dispatch(setContext(context));
+    }
+
+    fetch();
+  });
 
   return (
     <PageContainer>
