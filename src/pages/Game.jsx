@@ -15,6 +15,7 @@ const Game = () => {
   const messages = useSelector(state => state.messages);
   const [userMessage, setUserMessage] = useState(null);
   const messageField = useRef();
+  const messageList = useRef();
   const ws = useContext(websocketContext);
 
   const sendUserMessage = () => {
@@ -25,6 +26,11 @@ const Game = () => {
   useEffect(() => {
     messageField.current.value = userMessage;
   }, [userMessage]);
+
+  useEffect(() => {
+    const elem = messageList.current;
+    elem.scrollTo(0, elem.offsetHeight);
+  }, [messages]);
 
   return (
     <PageContainer>
@@ -41,7 +47,7 @@ const Game = () => {
         </SideBarItem>
         <SideBarItem>
           <SideBarItemHeader>채팅</SideBarItemHeader>
-          <MessageList>
+          <MessageList ref={messageList}>
             {
               messages.map((message) => (
                 <MessageBox message={message} />
@@ -109,6 +115,7 @@ const PlayerList = styled.div`
 const MessageList = styled.div`
   overflow: scroll;
   margin-bottom: 5px;
+  scroll-behavior: smooth;
 `;
 
 const InputForm = styled.div`
