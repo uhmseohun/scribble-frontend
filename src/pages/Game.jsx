@@ -33,13 +33,9 @@ const Game = () => {
           <SideBarItemHeader>랭킹</SideBarItemHeader>
           <PlayerList>
             {
-              users
-                .map((user, index) => (
-                  <Player
-                    user={user}
-                    rank={index + 1}
-                  />
-                ))
+              users.map((user, index) =>(
+                <Player user={user} rank={index + 1}/>
+              ))
             }
           </PlayerList>
         </SideBarItem>

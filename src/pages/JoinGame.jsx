@@ -10,7 +10,7 @@ import { setContext, setUserName as setReduxUserName } from '../store/actions';
 import { websocketContext } from '../websocket';
 
 const JoinGame = () => {
-  const [userName, setUserName] = useState(null);
+  const [userName, setUserName] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
   const users = useSelector(state => (
