@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import Canvas from '../components/Canvas';
+import DrawingCanvas from '../components/DrawingCanvas';
+import SocketCanvas from '../components/SocketCanvas';
 import Player from '../components/Player';
 import TextField from '../components/TextField';
 import Button from '../components/Button';
@@ -14,18 +15,23 @@ const Game = () => {
   ));
   const messages = useSelector(state => state.messages);
   const [userMessage, setUserMessage] = useState(null);
-  const messageField = useRef();
-  const messageList = useRef();
+
+  const drawer = useSelector(state => state.context.drawer)
+  const user = useSelector(state => state.userInfo.key);
+  const [drawable, setDrawable] = useState(false);
+
   const ws = useContext(websocketContext);
 
-  const sendUserMessage = () => {
-    ws.sendMessage(userMessage);
-    setUserMessage(null);
-  };
+  const messageField = useRef();
+  const messageList = useRef();
 
   useEffect(() => {
     messageField.current.value = userMessage;
   }, [userMessage]);
+
+  useEffect(() => {
+    setDrawable(!!(drawer && user && drawer === user));
+  }, [drawer, user]);
 
   useEffect(() => {
     const elem = messageList.current;
@@ -61,12 +67,25 @@ const Game = () => {
               onChange={(e) => setUserMessage(e.target.value)}
               ref={messageField}
             />
-            <Button onClick={sendUserMessage}>보내기</Button>
+            <Button
+              onClick={() => {
+                ws.sendMessage(userMessage);
+                setUserMessage(null);
+              }}
+            >
+              보내기
+            </Button>
           </InputForm>
         </SideBarItem>
       </SideBar>
       <CanvasWrapper>
-        <Canvas width={700} height={700} />
+        {
+          drawable ? (
+            <DrawingCanvas />
+          ) : (
+            <SocketCanvas />
+          )
+        }
       </CanvasWrapper>
     </PageContainer>
   );
