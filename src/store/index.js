@@ -34,7 +34,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         userInfo: {
           ...(state.userInfo),
-          name: action.userKey,
+          key: action.userKey,
         },
       };
       break;

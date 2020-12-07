@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useContext } from 'react';
+import React, { createRef, useEffect, useContext, useState } from 'react';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 import { websocketContext } from '../websocket';
@@ -11,11 +11,15 @@ let pos = {
 let ctx;
 
 const Canvas = ({ width = 400, height = 400 }) => {
-  const isMyTurn = useSelector(state => (
-    state.context.drawer === state.userInfo.key
-  ));
+  const drawer = useSelector(state => state.context.drawer)
+  const user = useSelector(state => state.userInfo.key);
+  const [drawable, setDrawable] = useState(false);
   const ws = useContext(websocketContext)
   const canvasRef = createRef();
+
+  useEffect(() => {
+    setDrawable(!!(drawer && user && drawer === user));
+  }, [drawer, user]);
 
   ws.socket.addEventListener('message', ({ data }) => {
     data = JSON.parse(data);
@@ -59,24 +63,24 @@ const Canvas = ({ width = 400, height = 400 }) => {
   });
 
   const initDraw = (event) => {
-    ctx.beginPath();
-    pos = {
-      drawable: true,
-      ...getPosition(event),
-    };
-    ws.sendDrawing('initDraw');
+    if (drawable) {
+      ctx.beginPath();
+      pos = {
+        drawable: true,
+        ...getPosition(event),
+      };
+      ws.sendDrawing('initDraw');
+    }
   };
 
   const draw = (event) => {
-    if (pos.drawable && isMyTurn) {
-      if (
-        pos.x === event.offsetX &&
-        pos.y === event.offsetY
-      ) return;
+    if (pos.drawable && drawable) {
       pos = {
         ...pos,
         ...getPosition(event),
       };
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
       ws.sendDrawing('draw', {
         x: pos.x,
         y: pos.y,

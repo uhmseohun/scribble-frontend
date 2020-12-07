@@ -19,7 +19,7 @@ const Game = () => {
 
   const sendUserMessage = () => {
     ws.sendMessage(userMessage);
-    messageField.current.value = null;
+    setUserMessage(null);
   };
 
   return (
@@ -53,7 +53,7 @@ const Game = () => {
             <RightMarginTextField
               placeholder='메시지나 정답을 입력하세요.'
               value={userMessage}
-              onInput={(e) => setUserMessage(e.target.value)}
+              onChange={(e) => setUserMessage(e.target.value)}
               ref={messageField}
             />
             <Button onClick={sendUserMessage}>보내기</Button>
