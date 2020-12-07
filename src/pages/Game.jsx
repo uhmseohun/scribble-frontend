@@ -4,7 +4,7 @@ import Player from '../components/Player';
 import TextField from '../components/TextField';
 import Button from '../components/Button';
 import MessageBox from '../components/MessageBox';
-import { useState, useContext, useRef } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { websocketContext } from '../websocket';
 
@@ -22,6 +22,10 @@ const Game = () => {
     setUserMessage(null);
   };
 
+  useEffect(() => {
+    messageField.current.value = userMessage;
+  }, [userMessage]);
+
   return (
     <PageContainer>
       <SideBar>
@@ -30,7 +34,7 @@ const Game = () => {
           <PlayerList>
             {
               users
-                .sort((a, b) => a.rank - b.rank)
+                .sort((a, b) => b.score - a.score)
                 .map((user, index) => (
                   <Player
                     user={user}
