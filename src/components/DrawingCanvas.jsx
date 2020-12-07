@@ -35,6 +35,12 @@ const Canvas = ({ width = 700, height = 700 }) => {
 
   const draw = (event) => {
     if (pos.drawable) {
+      if (
+        pos.x === event.offsetX &&
+        pos.y === event.offsetY
+      ) {
+        return;
+      }
       pos = {
         ...pos,
         ...getPosition(event),
