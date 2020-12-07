@@ -5,7 +5,7 @@ import { addMessage, setContext, setUserKey } from './store/actions';
 
 export const websocketContext = createContext(null);
 
-const websocketUri = 'ws://481de54ecca4.ngrok.io/ws';
+const websocketUri = 'ws://121.170.91.125:4000/ws';
 const socket = new WebSocket(websocketUri);
 
 const WebsocketProvider = ({ children }) => {
