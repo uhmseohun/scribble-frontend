@@ -24,6 +24,15 @@ const Canvas = ({ width = 700, height = 700 }) => {
     canvas.addEventListener('mouseout', finishDraw);
   });
 
+  ws.socket.addEventListener('message', ({ data }) => {
+    data = JSON.parse(data);
+    if (data.type === 'draw') {
+      if (data.event === 'clearCanvas') {
+        ctx.clearRect(0, 0, width, height);
+      }
+    }
+  });
+
   const initDraw = (event) => {
     ctx.beginPath();
     pos = {
